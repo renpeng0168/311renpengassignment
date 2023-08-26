@@ -1,0 +1,28 @@
+# Example GitHub Actions workflow file with deployment step
+
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build Docker image
+      run: docker build -t my-app .
+
+    - name: Run tests
+      run: docker run my-app npm test
+
+    - name: Deploy to ECS (if tests pass)
+      if: success()
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        service: my-service-name
+        cluster: my-cluster-name
+        task-definition: path/to/task-definition.json
