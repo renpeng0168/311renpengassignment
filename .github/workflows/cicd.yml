@@ -1,0 +1,26 @@
+name: My Workflow
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+        # Add your build steps here
+        - name: Build
+          run: echo "Building..."
+    
+        # Build the Docker image
+        - name: Build Docker image
+          run: docker build -t index.js -f Dockerfile .
+  
+        # Tag the Docker image
+        - name: Tag Docker image
+          run: docker tag renpeng 255945442255.dkr.ecr.ap-southeast-1.amazonaws.com/renpeng:latest
+  
+        # Log in to the container registry
+        - name: Log in to container registry
+          run: echo ${{ secrets.REGISTRY_PASSWORD }} | docker login 255945442255.dkr.ecr.ap-southeast-1.amazonaws.com/renpeng:latest -u ${{ secrets.REGISTRY_USERNAME }} --password-stdin
+  
+        # Push the Docker image to the container registry
+        - name: Push Docker image to container registry
+          run: docker push 255945442255.dkr.ecr.ap-southeast-1.amazonaws.com/renpeng:latest
+  
